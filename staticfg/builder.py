@@ -275,18 +275,31 @@ class CFGBuilder(ast.NodeVisitor):
         self.goto_new_block(node)
 
     def visit_Call(self, node):
+        # def visit_func(node):
+        #     if type(node) == ast.Name:
+        #         return node.id
+        #     elif type(node) == ast.Attribute:
+        #         # Recursion on series of calls to attributes.
+        #         func_name = visit_func(node.value)
+        #         func_name += "." + node.attr
+        #         return func_name
+        #     elif type(node) == ast.Str:
+        #         return node.s
+        #     elif type(node) == ast.Subscript:
+        #         return node.value.id
+        #     else:
+        #         return type(node).__name__
+
+        # EDITTED VERSION OF VISIT_FUNC -> replacing type(node) with isinstance(node, ...)
         def visit_func(node):
-            if type(node) == ast.Name:
+            if isinstance(node, ast.Name):
                 return node.id
-            elif type(node) == ast.Attribute:
-                # Recursion on series of calls to attributes.
-                func_name = visit_func(node.value)
-                func_name += "." + node.attr
-                return func_name
-            elif type(node) == ast.Str:
-                return node.s
-            elif type(node) == ast.Subscript:
+            elif isinstance(node, ast.Attribute):
+                return visit_func(node.value) + '.' + node.attr
+            elif isinstance(node, ast.Subscript):
                 return node.value.id
+            elif isinstance(node, str):
+                return node.s
             else:
                 return type(node).__name__
 
