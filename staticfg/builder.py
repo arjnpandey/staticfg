@@ -297,7 +297,11 @@ class CFGBuilder(ast.NodeVisitor):
             elif isinstance(node, ast.Attribute):
                 return visit_func(node.value) + '.' + node.attr
             elif isinstance(node, ast.Subscript):
-                return node.value.id
+                if isinstance(node.value, ast.Name):
+                    return node.value.id
+                else:
+                    return visit_func(node.value)
+                
             elif isinstance(node, str):
                 return node.s
             else:
